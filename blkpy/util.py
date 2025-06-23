@@ -2,6 +2,7 @@ import subprocess
 import shlex
 import json
 import click
+from pprint import pprint
 
 
 # create a function that runs suprocess and returns the output
@@ -12,7 +13,7 @@ def run_command(command):
     return output
 
 
-def run_lsblk(device):
+def run_lsblk(device, nice=False):
     """
     Runs lsblk command and produces JSON output:
 
@@ -27,7 +28,7 @@ def run_lsblk(device):
     ]
     }
     """
-    command = f"lsblk -J -o NAME,SIZE,TYPE,MOUNTPOINT"
+    command = "lsblk -J -o NAME,SIZE,TYPE,MOUNTPOINT"
     # run the command
     try:
         output = run_command(command)
@@ -35,9 +36,12 @@ def run_lsblk(device):
 
         for parent in devices:
             if parent["name"] == device:
-                return parent
+                if nice:
+                    return pprint(parent)
             for child in parent.get("children", []):
                 if child["name"] == device:
+                    if nice:
+                        return pprint(child)
                     return child
         # if device not found
         click.echo(click.style("Device not found:", fg="red"))

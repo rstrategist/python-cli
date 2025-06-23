@@ -5,15 +5,16 @@ from blkpy.file_utils import list_files
 
 # create the click commands
 @click.group()
-def cli():
+@click.option("--verbose", "-v", is_flag=True)
+def cli(verbose):
+    print(f"Verbose: {verbose}")
     """blkpy: A simple CLI tool for inspecting block devices and listing files."""
     pass
 
 
 @cli.command()
-@click.option("--verbose", "-v", is_flag=True)
 @click.argument("device")
-def inspect(device, verbose):
+def inspect(device):
     """
     Inspect a block device.
 
@@ -24,14 +25,13 @@ def inspect(device, verbose):
         blkpy inspect --verbose vda
     """
     print(f"Device: {device}")
-    print(f"Verbose: {verbose}")
     print(f"{run_lsblk(device)}")
 
 
 @cli.command()
+@click.argument("directory")
 @click.option("--recursive", "-r", is_flag=True, help="List files recursively.")
 @click.option("--extension", "-e", default=None, help="Filter files by extension.")
-@click.argument("directory")
 def listfiles(directory, recursive, extension):
     """
     List files in a directory.

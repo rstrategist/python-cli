@@ -1,9 +1,7 @@
 from click.testing import CliRunner
 from gcli import search
 
-
 # search(path, ftype):
-
 
 def test_search():
     runner = CliRunner()
